@@ -42,7 +42,7 @@ if [ updateall -eq 1 ]; then
 	# update once every 30 days 'everything'
 	# XXX once verified it works right, add stripall below
 	rsync -rl --exclude='\.\~tmp\~' $mirror/. 2> /dev/null | compress > .$allincomp && \
-		mv .$allincomp $allincomp || exit 1
+		mv -f .$allincomp $allincomp || exit 1
 fi
 
 mungeforlocate() {
@@ -65,11 +65,11 @@ for url in $mirror/{ftplist,timestamp,Changelogs,OpenSSH/portable,patches,snapsh
 do
 	rsync -rl --exclude='\.\~tmp\~' $url 2> /dev/null
 done | compress > .$freqincomp && \
-	mv .$freqincomp $freqincomp
+	mv -f .$freqincomp $freqincomp
 
 {
 	xz -d < $allincomp | stripall
 	xz -d < $freqincomp
 } | sort -u | mungeforlocate | \
 	/usr/libexec/locate.mklocatedb > .$dbname && \
-	mv .$dbname $dbname
+	mv -f .$dbname $dbname
