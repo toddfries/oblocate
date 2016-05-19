@@ -17,6 +17,7 @@
 mirror=rsync://mirror.esc7.net/openbsd
 mirror=rsync://ftp.eu.openbsd.org/OpenBSD
 
+export TMPDIR=/i5.a/tmp
 datadir=$HOME/var/db
 allincomp=allobsd.xz
 freqincomp=freqobsd.xz
@@ -52,7 +53,12 @@ mungeforlocate() {
 	! /^[-d]/	{next}
 	/^-/		{t=""}
 	/^d/		{t="/"}
-			{print $3 "/" $4 "/" $5 t}'
+			{
+				gsub(",","",$2);
+				gsub("/","",$3);
+				gsub(":","",$4);
+				printf "%s%s|%x|%s%s\n",$3,$4,$2,$5,t;
+			}'
 }
 
 # strip freq dirs off 'all' bits
@@ -70,6 +76,6 @@ done | compress > .$freqincomp && \
 {
 	xz -d < $allincomp | stripall
 	xz -d < $freqincomp
-} | sort -u | mungeforlocate | \
+} | sort -H -S 1024M -u | mungeforlocate | \
 	/usr/libexec/locate.mklocatedb > .$dbname && \
 	mv -f .$dbname $dbname
