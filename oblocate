@@ -20,6 +20,16 @@ verbose=0
 datadir=$HOME/var/db
 dbname=allobsd.database
 
+# /5 is a general rule of thumb
+sortmem=$(echo "$(sysctl -n hw.physmem)/1024/1024/5"|bc)
+if [ sortmem -gt 2048 ]; then
+	sortmem=2048
+fi
+export sort="sort -H -S ${sortmem}M -T $TMPDIR"
+
+td=$(mktemp -d $TMPDIR/.oblocate.XXXXXXXXXXXXXXXXXXXX)
+trap 'rm -rf $td' 0 1 2 3 13 15
+
 allincomp=allobsd.xz
 freqincomp=freqobsd.xz
 mirror=rsync://mirror.esc7.net/openbsd
