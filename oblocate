@@ -14,18 +14,30 @@
 # ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
 # OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
+export TMPDIR=/$(hostname -s).a/tmp
+build=0
+verbose=0
+datadir=$HOME/var/db
+dbname=allobsd.database
+
+allincomp=allobsd.xz
+freqincomp=freqobsd.xz
 mirror=rsync://mirror.esc7.net/openbsd
 mirror=rsync://ftp.eu.openbsd.org/OpenBSD
 
-export TMPDIR=/i5.a/tmp
-datadir=$HOME/var/db
-allincomp=allobsd.xz
-freqincomp=freqobsd.xz
-dbname=allobsd.database
-
 cd $datadir || exit 1
 
-if ! [ "$1" = "-B" ]; then
+while [ "$1" ]
+do
+	case "$1" in
+	-B) build=1;;
+	-v) let verbose=verbose+1;;
+	*) break;;
+	esac
+	shift
+done
+
+if [ build -eq 0 ]; then
 	exec locate -d $datadir/$dbname "$@"
 fi
 
