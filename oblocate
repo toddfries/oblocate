@@ -28,7 +28,7 @@ sortmem=$(echo "$(sysctl -n hw.physmem)/1024/1024/5"|bc)
 if [ sortmem -gt 2048 ]; then
 	sortmem=2048
 fi
-export sort="sort -H -S ${sortmem}M -T $TMPDIR"
+export sort="LC_ALL=C sort -H -S ${sortmem}M -T $TMPDIR"
 
 td=$(mktemp -d $TMPDIR/.${me}.XXXXXXXXXXXXXXXXXXXX)
 trap 'rm -rf $td' 0 1 2 3 13 15
@@ -101,6 +101,6 @@ done | compress > .$freqincomp && \
 {
 	xz -d < $allincomp | stripall
 	xz -d < $freqincomp
-} | sort -H -S 1024M -u | mungeforlocate | \
+} | $sort -u | mungeforlocate | \
 	/usr/libexec/locate.mklocatedb > .$dbname && \
 	mv -f .$dbname $dbname
