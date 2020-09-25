@@ -25,8 +25,10 @@ dbname=allobsd.database
 
 # /5 is a general rule of thumb
 sortmem=$(echo "$(sysctl -n hw.physmem)/1024/1024/5"|bc)
-if [ sortmem -gt 2048 ]; then
-	sortmem=2048
+sortmaxmem=2048
+sortmaxmem=1024
+if [ sortmem -gt sortmaxmem ]; then
+	sortmem=$sortmaxmem
 fi
 export sort="env LC_ALL=C sort -H -S ${sortmem}M -T $TMPDIR"
 
