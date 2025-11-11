@@ -31,9 +31,13 @@ Notes for use:
 
 2) rclone (pkg_add -Ur rclone)  is used for older releases, so you'll need a stanza in $HOME/.config/rclone/rclone.conf similar to the following:
 
+```
 [ob-https]
 type = http
 url = https://ftp.eu.openbsd.org/pub/OpenBSD
+```
 
 3) local storage considerations: oblocate utilizes $HOME/.cache/oblocate as a place to drop xz (pkg_add -Ur xz) compressed cached listings.  This way it doesn't re-check release dirs unless they're not present.  If you manage to get a very small size on a future release that hasn't occurred yet, remove it once the release has occurrred.   And up to two releases back there are stable packages released, those won't be picked up unless current and one back release is not removed.  The total space is 19M for the cache directory... The total file of the locate file ($HOME/var/db/allobsd.database) is 75.4M:
+```
 -rw-r--r--  1 todd  wheel  75.4M Nov 11 11:18 allobsd.database
+```
